@@ -7,6 +7,8 @@ const snake = [{ x: 10, y: 10 }];
 let food = { x: 15, y: 10 };
 let dx = 0;
 let dy = 0;
+let score = 0;
+let gameOver = false;
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -21,7 +23,20 @@ function draw() {
     ctx.fillStyle = 'red';
     ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
 
+    // Draw score
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Arial';
+    ctx.fillText('Score: ' + score, 10, 30);
+
+    if (gameOver) {
+        ctx.fillStyle = 'black';
+        ctx.font = '30px Arial';
+        ctx.fillText('Game Over!', 130, canvas.height / 2);
+        return;
+    }
+
     moveSnake();
+    checkCollision();
 }
 
 function moveSnake() {
@@ -30,9 +45,17 @@ function moveSnake() {
 
     // Check if snake eats food
     if (head.x === food.x && head.y === food.y) {
+        score++;
         food = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
     } else {
         snake.pop();
+    }
+}
+
+function checkCollision() {
+    const head = snake[0];
+    if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+        gameOver = true;
     }
 }
 
@@ -59,4 +82,4 @@ function keyDownEvent(event) {
 
 document.addEventListener('keydown', keyDownEvent);
 
-setInterval(draw, 100);
+setInterval(draw, 250);
